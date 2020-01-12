@@ -33,7 +33,7 @@ def get_all_drinks():
             'success': True,
             'drinks': drinks
         }), 200
-    except:
+    except Exception:
         abort(500)
 
 
@@ -50,7 +50,7 @@ def get_drinks_detail(jwt):
             'success': True,
             'drinks': drinks
         }), 200
-    except:
+    except Exception:
         abort(500)
 
 # Handle endpoint to POST a new drink
@@ -73,7 +73,7 @@ def post_drink(jwt):
 
     try:
         drink.insert()
-    except:
+    except Exception:
         abort(400)
 
     drinks = Drink.query.all()
@@ -84,7 +84,7 @@ def post_drink(jwt):
             'success': True,
             'drinks': drinks
         }), 200
-    except:
+    except Exception:
         abort(500)
 
 
@@ -112,7 +112,7 @@ def patch_drink(jwt, id):
         drink.title = title
         drink.recipe = recipe
         drink.update()
-    except:
+    except Exception:
         abort(422)
 
     drinks = Drink.query.all()
@@ -123,7 +123,7 @@ def patch_drink(jwt, id):
             'success': True,
             'drinks': drinks
         }), 200
-    except:
+    except Exception:
         abort(500)
 
 
@@ -139,7 +139,7 @@ def delete_drink(jwt, id):
 
     try:
         drink.delete()
-    except:
+    except Exception:
         abort(422)
 
     drinks = Drink.query.all()
@@ -150,7 +150,7 @@ def delete_drink(jwt, id):
             'success': True,
             'drinks': drinks
         }), 200
-    except:
+    except Exception:
         abort(500)
 
 # Error Handling
@@ -179,6 +179,16 @@ def failed_req(error):
         "error": 400,
         "message": "request failed"
     }), 400
+
+# handle unauthorized client error
+@app.errorhandler(AuthError)
+def unauthorized_request(error):
+    return jsonify({
+        "success": False,
+        "error": 401,
+        "message": "Unauthorized client error",
+    }), 401
+
 
 # handle unauthorized client error
 @app.errorhandler(401)
